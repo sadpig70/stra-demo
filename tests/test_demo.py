@@ -34,6 +34,17 @@ class TestEcosystemDemo(unittest.TestCase):
         self.assertEqual(demo._sev("certifiable"), demo._sev("valid"))
         self.assertEqual(demo._sev("blocked"), demo._sev("breach"))
 
+    def test_compat_mesh_spans_three_platforms(self):
+        import demo
+        rows = demo.run_compat_mesh()
+        platforms = [row[0] for row in rows]
+        self.assertEqual(platforms, ["Attestra", "Routestra", "Clearstra"])
+        by_name = {row[1]: row[2] for row in rows}
+        # a gate and a bound return a verdict; a price returns a cost string
+        self.assertEqual(by_name["pqc-mesh (gate)"], "valid")
+        self.assertEqual(by_name["flow-mesh (bound)"], "compliant")
+        self.assertTrue(by_name["agent-ops (price)"].startswith("$"))
+
 
 if __name__ == "__main__":
     unittest.main()

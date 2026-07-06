@@ -1,5 +1,7 @@
 # -stra ecosystem demo
 
+[![CI](https://github.com/sadpig70/stra-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/sadpig70/stra-demo/actions/workflows/ci.yml)
+
 > **route → clear → certify → attest, end to end.** The four HELIX-derived `-stra`
 > platforms run one datacenter siting decision together and produce a single unified
 > verdict + attestation.
@@ -58,7 +60,30 @@ python demo.py
   [valid       ] attest (Attestra handback)
   ECOSYSTEM VERDICT: valid  (severity-aligned across route/clear/certify/attest)
   ATTESTATION: ATT-... (grade=full)
+
+=== Compatibility Mesh: one named cluster -> three machines -> three platforms ===
+  [Attestra ] pqc-mesh (gate)    valid
+  [Routestra] flow-mesh (bound)  compliant
+  [Clearstra] agent-ops (price)  $10.00 -> tool-operator
 ```
+
+## Compatibility Mesh — one name, three machines, three platforms
+
+The second block demonstrates HELIX's **machine-aware routing**. The corpus contained a
+five-project cluster that all called themselves a "Compatibility Mesh" (SovMesh, PqcMesh,
+SignalMesh, FlowMesh, AgentMesh). A naive read would condense them into *one* new
+platform. But reading each project's real code shows they share a **name, not a machine**:
+
+| sibling | machine | landed on | as |
+|---|---|---|---|
+| SovMesh · PqcMesh · SignalMesh | assessment → severity **verdict** | Attestra | predicate-gate packs |
+| FlowMesh | utilization **threshold-bound** | Routestra | a `bound` pack |
+| AgentMesh | cost **pricing** + rollup (no verdict) | Clearstra | a `price` market |
+
+So routing sent the five to **three existing platforms — zero new kernels**. The demo runs
+the three that landed on distinct platforms against one datacenter and shows the
+heterogeneity directly: a gate and a bound return a **verdict**; a price returns a **cost**.
+Each absorbed pack ships a parity test against its source (`test_*_mesh_parity.py`).
 
 ## Notes
 

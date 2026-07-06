@@ -90,6 +90,52 @@ def run_demo():
             "attestation": warrant}
 
 
+def run_compat_mesh():
+    """The 'Compatibility Mesh' cluster: one name, three machines, three platforms.
+
+    SovMesh/PqcMesh/SignalMesh/FlowMesh/AgentMesh share a name (an interconnection-mesh
+    transplant) but NOT one machine. HELIX's machine-aware routing verified each against
+    real code and sent it to the platform whose kernel matches its machine. Here the same
+    datacenter is audited by the three that landed on DISTINCT platforms — a predicate
+    gate (Attestra), a threshold-bound (Routestra), and a price (Clearstra) — so the
+    heterogeneity is visible: a gate and a bound return a verdict; a price returns a cost.
+    """
+    rows = []
+
+    # PqcMesh -> Attestra pqc-mesh (predicate gate): is the site's crypto PQC-ready?
+    from attestra_packs.loader import load_packs as a_load
+    from attestra_core.gate_runtime import run_gates
+    pqc = a_load()["packs"]["pqc-mesh"]
+    pqc_packet = {"packet_id": "SITE-CRYPTO-1", "subject": "SITE-CRYPTO-1", "assets": [
+        {"asset_id": "kms", "algorithm": "ml_kem_768", "purpose": "key_exchange"},
+        {"asset_id": "bulk", "algorithm": "aes256", "purpose": "confidentiality"},
+        {"asset_id": "logs", "algorithm": "sha384", "purpose": "integrity"}]}
+    pqc_v = run_gates(pqc_packet, pqc["predicate_fns"], now=NOW,
+                      id_field=pqc.get("id_field", "packet_id"), schema=pqc.get("schema"))
+    rows.append(("Attestra", "pqc-mesh (gate)", pqc_v["verdict"],
+                 "site crypto is quantum-safe / PQC-ready"))
+
+    # FlowMesh -> Routestra flow-mesh (threshold-bound): pipeline throughput headroom?
+    from routestra_packs.loader import load_packs as r_load, run_stage as r_run
+    flow = r_load()["packs"]["flow-mesh"]
+    flow_b = r_run(flow, "bound", {"telemetry": {"input_rate": 80, "stages": [
+        {"stage_id": "ingest", "constraint_type": "io", "capacity": 200},
+        {"stage_id": "gpu", "constraint_type": "compute", "capacity": 100}]}}, now=NOW)
+    rows.append(("Routestra", "flow-mesh (bound)", flow_b["verdict"],
+                 "inference pipeline runs within capacity (no critical bottleneck)"))
+
+    # AgentMesh -> Clearstra agent-ops (pricing, NOT a verdict): what do agent ops cost?
+    from clearstra_markets.loader import load_markets, run_stage as c_run
+    ao = load_markets()["markets"]["agent-ops"]
+    priced = c_run(ao, "price", {"order": {"op_type": "tool", "units": 5000,
+                                           "operator": "site-agents"}})
+    rows.append(("Clearstra", "agent-ops (price)",
+                 f"${priced['cost']:.2f} -> {priced['accountable_role']}",
+                 "5000 agent tool calls priced + assigned an accountable role (a cost, not pass/fail)"))
+
+    return rows
+
+
 def main():
     r = run_demo()
     print("=== -stra ecosystem: datacenter siting decision ===\n")
@@ -102,6 +148,14 @@ def main():
     att = r["attestation"]
     if att:
         print(f"  ATTESTATION: {att['attestation_id']} (grade={att['grade']})")
+
+    print("\n=== Compatibility Mesh: one named cluster -> three machines -> three platforms ===\n")
+    for platform, name, result, why in run_compat_mesh():
+        print(f"  [{platform:9s}] {name:18s} {result}")
+        print(f"               -> {why}")
+    print("\n  same-named siblings, machine-aware routing sent each to a different kernel:")
+    print("  Attestra=gate (verdict) | Routestra=bound (verdict) | Clearstra=price (cost)")
+
     return 0 if r["ecosystem_verdict"] != "breach" else 1
 
 
