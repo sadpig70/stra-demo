@@ -1,0 +1,34 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: stra-demo
+      - uses: actions/checkout@v4
+        with:
+          repository: sadpig70/Routestra
+          path: Routestra
+      - uses: actions/checkout@v4
+        with:
+          repository: sadpig70/Clearstra
+          path: Clearstra
+      - uses: actions/checkout@v4
+        with:
+          repository: sadpig70/Certstra
+          path: Certstra
+      - uses: actions/checkout@v4
+        with:
+          repository: sadpig70/Attestra
+          path: Attestra
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run ecosystem demo (route -> clear -> certify -> attest)
+        working-directory: stra-demo
+        run: python demo.py
+      - name: Tests
+        working-directory: stra-demo
+        run: python -m unittest discover -s tests -v
