@@ -6,8 +6,10 @@
 > platforms run one datacenter siting decision together and produce a single unified
 > verdict + attestation.
 
-The `-stra` family are four independent deterministic platforms, each a kernel + N
-domain packs condensed from a different HELIX corpus cluster:
+The `-stra` family are **five** independent deterministic platforms, each a kernel + N
+domain packs condensed from a different HELIX corpus cluster. This end-to-end demo wires
+the first four (route → clear → certify → attest); the fifth, Scorestra, is a sibling
+emitted by the same Condense loop.
 
 | Platform | verb | does |
 |---|---|---|
@@ -15,6 +17,7 @@ domain packs condensed from a different HELIX corpus cluster:
 | [Clearstra](https://github.com/sadpig70/Clearstra) | clear | clears capacity/rights allocation (conflict-free, priority) |
 | [Certstra](https://github.com/sadpig70/Certstra) | certify | certifies a robot/OS release against a baseline |
 | [Attestra](https://github.com/sadpig70/Attestra) | attest | attests a delegated action and issues a warrant |
+| [Scorestra](https://github.com/sadpig70/Scorestra) | score | scores items on weighted factors and grades them into tiers |
 
 They were built independently but **share one severity algebra**:
 
@@ -93,11 +96,11 @@ classes — decided by reading real code, never the name:
 
 | class | what it is | outcome | count |
 |---|---|---|---|
-| **absorb** | a self-contained gate/primitive (check-ladder → verdict, or a price/bound/certify) | becomes a pack **with a source-parity test** | 14 |
-| **defer** | a multi-output simulation/scoring machine (pathfinding, physics sim, weighted score + ledger) | left standalone — a faithful pack would need the whole engine | 6 |
+| **absorb** | a self-contained gate/primitive (check-ladder → verdict, or a price/bound/certify/score) | becomes a pack **with a source-parity test** | 20 |
+| **defer** | a machine no kernel fits even after CONDENSE (RouteSentinel robot-sim, EndowFront projection) | left standalone | 2 |
 | **design-only** | no real code yet | marked, skipped | 8 |
 
-The 14 absorptions grew all four platforms from the corpus, and routing corrected two by
+The absorptions grew **five** platforms from the corpus, and routing corrected two by
 machine: **AgentMesh** (pricing) went Attestra→Clearstra; **SettleMesh** (a compliance
 gate, despite the name) went Clearstra→Attestra.
 
@@ -106,11 +109,15 @@ gate, despite the name) went Clearstra→Attestra.
 | [Attestra](https://github.com/sadpig70/Attestra) | attest | **23** predicate gates |
 | [Clearstra](https://github.com/sadpig70/Clearstra) | clear | **12** markets (price/clear/settle/rehearse) |
 | [Routestra](https://github.com/sadpig70/Routestra) | route | **11** routing/bound packs |
-| [Certstra](https://github.com/sadpig70/Certstra) | certify | **4** certify packs |
+| [Certstra](https://github.com/sadpig70/Certstra) | certify | **5** certify packs |
+| [Scorestra](https://github.com/sadpig70/Scorestra) | score | **5** scoring packs (weighted score → tier) |
 
-After the sweep, HELIX's `build_on_platform_candidate()` returns None — the pool is fully
-routed. The remaining growth path is **CONDENSE** (emit a *new* platform) for a cluster
-with a genuinely novel machine, not another pack.
+Then the loop took the *other* growth path: the projects first **deferred** as
+"scoring machines" shared a novel substrate (M15: weighted score → graded tier →
+aggregate) absent from the four kernels. HELIX's `condense_candidate()` proposed a
+**CONDENSE**, and **Scorestra** was emitted — the 5th platform, absorbing that whole
+cluster (5/5). After this, both `build_on_platform_candidate()` and `condense_candidate()`
+return None: the corpus is fully routed, and "defer" turned out to mean "not yet a kernel."
 
 ## Notes
 
