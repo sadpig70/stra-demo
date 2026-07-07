@@ -85,6 +85,33 @@ the three that landed on distinct platforms against one datacenter and shows the
 heterogeneity directly: a gate and a bound return a **verdict**; a price returns a **cost**.
 Each absorbed pack ships a parity test against its source (`test_*_mesh_parity.py`).
 
+## The full sweep — one corpus, sorted by machine
+
+The Compatibility Mesh was one cluster. HELIX then ran the same machine-aware routing
+across the *whole* corpus candidate pool and resolved every project into one of three
+classes — decided by reading real code, never the name:
+
+| class | what it is | outcome | count |
+|---|---|---|---|
+| **absorb** | a self-contained gate/primitive (check-ladder → verdict, or a price/bound/certify) | becomes a pack **with a source-parity test** | 14 |
+| **defer** | a multi-output simulation/scoring machine (pathfinding, physics sim, weighted score + ledger) | left standalone — a faithful pack would need the whole engine | 6 |
+| **design-only** | no real code yet | marked, skipped | 8 |
+
+The 14 absorptions grew all four platforms from the corpus, and routing corrected two by
+machine: **AgentMesh** (pricing) went Attestra→Clearstra; **SettleMesh** (a compliance
+gate, despite the name) went Clearstra→Attestra.
+
+| platform | verb | packs (from corpus) |
+|---|---|---|
+| [Attestra](https://github.com/sadpig70/Attestra) | attest | **23** predicate gates |
+| [Clearstra](https://github.com/sadpig70/Clearstra) | clear | **12** markets (price/clear/settle/rehearse) |
+| [Routestra](https://github.com/sadpig70/Routestra) | route | **11** routing/bound packs |
+| [Certstra](https://github.com/sadpig70/Certstra) | certify | **4** certify packs |
+
+After the sweep, HELIX's `build_on_platform_candidate()` returns None — the pool is fully
+routed. The remaining growth path is **CONDENSE** (emit a *new* platform) for a cluster
+with a genuinely novel machine, not another pack.
+
 ## Notes
 
 - Thin orchestration only: the demo imports each platform's **public kernel/packs** and
